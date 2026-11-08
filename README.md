@@ -4,7 +4,6 @@
 > *Provably unaltered medical records, transparent patient-controlled consent, and clinician-ready longitudinal intelligence.*
 
 [![Status](https://img.shields.io/badge/Status-Pre--Development%20Blueprint-blue?style=flat-square)](#)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#)
 [![DPDP Ready](https://img.shields.io/badge/DPDP%20India-2025%2F2026%20Compliant-emerald?style=flat-square)](#)
 [![ABDM Target](https://img.shields.io/badge/ABDM-M1%20%26%20M3%20Aligned-orange?style=flat-square)](#)
 [![Stack](https://img.shields.io/badge/Stack-Next.js%20%7C%20FastAPI%20%7C%20Supabase%20%7C%20Polygon-purple?style=flat-square)](#)
@@ -238,7 +237,6 @@ flowchart LR
 
 #### Smart Contract Reference Implementation
 ```solidity
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -317,7 +315,7 @@ classDiagram
     }
     class DiagnosticLab {
         +UUID id
-        +String NABL_License
+        +String NABL_Accreditation_No
         +uploadReport()
         +signEIP712Report()
         +anchorCommitment()
