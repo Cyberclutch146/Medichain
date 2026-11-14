@@ -26,10 +26,12 @@ export function ReportList({ reports, onSelectReport }: ReportListProps) {
 
       <div className="divide-y divide-rule">
         {reports.map((report) => (
-          <div
+          <button
+            type="button"
             key={report.id}
             onClick={() => onSelectReport(report)}
-            className="py-4 first:pt-1 last:pb-1 flex items-center justify-between cursor-pointer group hover:bg-paper/40 -mx-3 px-3 rounded-lg transition-colors"
+            className="w-full text-left py-4 first:pt-1 last:pb-1 flex items-center justify-between cursor-pointer group hover:bg-paper/40 -mx-3 px-3 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-verdigris focus-visible:outline-offset-2"
+            aria-label={`Open report details: ${report.title}, from ${report.labName}, issued ${report.displayDate}`}
           >
             <div className="flex items-start gap-3.5">
               <div className="w-10 h-10 rounded-lg bg-paper border border-rule flex items-center justify-center text-ink/70 group-hover:text-verdigris transition-colors flex-shrink-0 mt-0.5">
@@ -52,7 +54,7 @@ export function ReportList({ reports, onSelectReport }: ReportListProps) {
               </div>
               <ChevronRight className="w-4 h-4 text-muted group-hover:text-ink transition-transform group-hover:translate-x-0.5" />
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </section>

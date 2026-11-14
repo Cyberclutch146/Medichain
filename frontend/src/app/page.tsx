@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Header } from '../components/Header';
 import { HeroTrajectory } from '../components/HeroTrajectory';
 import { ReportDropzone } from '../components/ReportDropzone';
@@ -10,7 +10,7 @@ import { ReceiptDrawer } from '../components/ReceiptDrawer';
 import { DoctorAccessCard } from '../components/DoctorAccessCard';
 import { MOCK_REPORTS, HBA1C_TRAJECTORY, INITIAL_DOCTOR_ACCESS } from '../data/mockData';
 import { LabReport, CryptographicReceipt, DoctorAccess } from '../types';
-import { ShieldCheck, UserCheck, ArrowRight } from 'lucide-react';
+import { ShieldCheck, UserCheck, ArrowRight, Search, X } from 'lucide-react';
 
 export default function DashboardPage() {
   const [currentTab, setCurrentTab] = useState<'overview' | 'reports' | 'doctor'>('overview');
@@ -19,13 +19,22 @@ export default function DashboardPage() {
   const [selectedReportDetail, setSelectedReportDetail] = useState<LabReport | null>(null);
   const [selectedReceipt, setSelectedReceipt] = useState<CryptographicReceipt | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const showToast = (msg: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToastMessage(msg);
-    setTimeout(() => {
+    toastTimerRef.current = setTimeout(() => {
       setToastMessage(null);
     }, 4000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
 
   const handleReportAdded = (newReport: LabReport) => {
     setReports((prev) => [newReport, ...prev]);
@@ -71,6 +80,17 @@ export default function DashboardPage() {
     setSelectedReportDetail(null);
   };
 
+  const filteredReports = useMemo(() => {
+    if (!searchQuery.trim()) return reports;
+    const q = searchQuery.toLowerCase();
+    return reports.filter(
+      (r) =>
+        r.title.toLowerCase().includes(q) ||
+        r.labName.toLowerCase().includes(q) ||
+        r.keyBiomarkers.some((b) => b.name.toLowerCase().includes(q))
+    );
+  }, [reports, searchQuery]);
+
   return (
     <div className="min-h-screen bg-paper flex flex-col">
       <Header
@@ -81,8 +101,8 @@ export default function DashboardPage() {
 
       {/* Floating notification toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-ink text-surface px-4 py-2.5 rounded-xl shadow-lg text-xs font-medium flex items-center gap-2 border border-rule/20 animate-fade-in">
-          <ShieldCheck className="w-4 h-4 text-verdigris" />
+        <div className="fixed bottom-6 right-6 z-50 bg-ink text-surface px-4 py-3 rounded-xl shadow-lg text-xs font-medium flex items-center gap-2 border border-rule/20 animate-fade-in">
+          <ShieldCheck className="w-4 h-4 text-verdigris flex-shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -105,7 +125,7 @@ export default function DashboardPage() {
             {/* Screen 1 Peace of Mind Anchor: Doctor Access Banner */}
             <div className="bg-surface rounded-2xl border border-rule p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-paper border border-rule flex items-center justify-center text-verdigris flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-paper border border-rule flex items-center justify-center text-verdigris flex-shrink-0">
                   <UserCheck className="w-5 h-5" />
                 </div>
                 <div>
@@ -113,7 +133,7 @@ export default function DashboardPage() {
                     {doctorAccess.active ? (
                       <span>Active sharing with {doctorAccess.doctorName}</span>
                     ) : (
-                      <span className="text-vermilion">Clinician access is currently revoked</span>
+                      <span className="text-muted">Doctor sharing is currently paused</span>
                     )}
                   </h3>
                   <p className="text-xs text-muted">
@@ -126,7 +146,7 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => setCurrentTab('doctor')}
-                className="text-xs font-medium text-verdigris hover:text-verdigris-hover flex items-center gap-1 self-end sm:self-center"
+                className="min-h-[44px] px-3 text-xs font-medium text-verdigris hover:text-verdigris-hover flex items-center gap-1 self-end sm:self-center focus-visible:outline-2 focus-visible:outline-verdigris"
               >
                 <span>Manage consent</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -136,13 +156,36 @@ export default function DashboardPage() {
         )}
 
         {currentTab === 'reports' && (
-          <>
+          <div className="space-y-6">
             <ReportDropzone onReportAdded={handleReportAdded} />
+
+            {/* Search and filter bar */}
+            <div className="relative">
+              <Search className="w-4 h-4 text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search reports by provider, test name, or biomarker..."
+                className="w-full pl-10 pr-10 py-3 rounded-xl border border-rule bg-surface text-ink text-sm placeholder:text-muted focus:border-verdigris focus:outline-none focus:ring-1 focus:ring-verdigris transition-colors"
+                aria-label="Search diagnostic records"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="w-8 h-8 rounded-md text-muted hover:text-ink absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
             <ReportList
-              reports={reports}
+              reports={filteredReports}
               onSelectReport={(rep) => setSelectedReportDetail(rep)}
             />
-          </>
+          </div>
         )}
 
         {currentTab === 'doctor' && (

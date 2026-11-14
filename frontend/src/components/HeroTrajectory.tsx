@@ -80,6 +80,7 @@ export function HeroTrajectory({ points, onSelectPoint }: HeroTrajectoryProps) {
       <div className="relative w-full overflow-hidden pt-2 pb-4">
         <svg
           viewBox={`0 0 ${width} ${height}`}
+          role="img"
           className="w-full h-auto overflow-visible select-none"
           aria-label="Longitudinal HbA1c trajectory chart showing descent from 8.6% to 7.4%"
         >
@@ -89,8 +90,8 @@ export function HeroTrajectory({ points, onSelectPoint }: HeroTrajectoryProps) {
             y={targetY}
             width={width - 2 * paddingX + 24}
             height={height - paddingY - targetY + 8}
-            fill="#DDE8E2"
-            fillOpacity="0.35"
+            fill="var(--color-sage)"
+            fillOpacity="0.45"
             rx="6"
           />
           <text
@@ -107,7 +108,7 @@ export function HeroTrajectory({ points, onSelectPoint }: HeroTrajectoryProps) {
             y1={targetY}
             x2={width - paddingX}
             y2={targetY}
-            stroke="#1F7A6D"
+            stroke="var(--color-verdigris)"
             strokeWidth="1"
             strokeDasharray="4 4"
             strokeOpacity="0.4"
@@ -117,7 +118,7 @@ export function HeroTrajectory({ points, onSelectPoint }: HeroTrajectoryProps) {
           <path
             d={pathD}
             fill="none"
-            stroke="#1F7A6D"
+            stroke="var(--color-verdigris)"
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -131,23 +132,33 @@ export function HeroTrajectory({ points, onSelectPoint }: HeroTrajectoryProps) {
             return (
               <g
                 key={point.date}
-                className="cursor-pointer group"
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${point.displayDate} lab result: HbA1c ${point.value}%`}
+                className="cursor-pointer group focus-visible:outline-2 focus-visible:outline-verdigris"
                 onClick={() => {
                   setSelectedIdx(idx);
                   if (onSelectPoint) onSelectPoint(point);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedIdx(idx);
+                    if (onSelectPoint) onSelectPoint(point);
+                  }
+                }}
               >
-                {/* Hit area */}
-                <circle cx={x} cy={y} r="18" fill="transparent" />
+                {/* 44px equivalent hit area */}
+                <circle cx={x} cy={y} r="22" fill="transparent" />
 
                 {/* Halo for selected point */}
                 {isSelected && (
                   <circle
                     cx={x}
                     cy={y}
-                    r="9"
-                    fill="#1F7A6D"
-                    fillOpacity="0.2"
+                    r="10"
+                    fill="var(--color-verdigris)"
+                    fillOpacity="0.25"
                   />
                 )}
 
@@ -156,8 +167,8 @@ export function HeroTrajectory({ points, onSelectPoint }: HeroTrajectoryProps) {
                   cx={x}
                   cy={y}
                   r="5"
-                  fill="#FFFFFF"
-                  stroke="#1F7A6D"
+                  fill="var(--color-surface)"
+                  stroke="var(--color-verdigris)"
                   strokeWidth="2.5"
                   className="transition-transform group-hover:scale-125"
                 />

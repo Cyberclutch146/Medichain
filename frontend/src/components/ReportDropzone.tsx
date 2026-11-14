@@ -105,11 +105,20 @@ export function ReportDropzone({ onReportAdded }: ReportDropzoneProps) {
       />
 
       <div
+        tabIndex={0}
+        role="button"
+        aria-label="Upload diagnostic lab report"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !isProcessing && fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-xl p-8 sm:p-10 text-center cursor-pointer transition-all ${
+        onKeyDown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && !isProcessing) {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }
+        }}
+        className={`border-2 border-dashed rounded-xl p-8 sm:p-10 text-center cursor-pointer transition-all focus-visible:outline-2 focus-visible:outline-verdigris focus-visible:outline-offset-2 ${
           isDragging
             ? 'border-verdigris bg-sage/20 scale-[0.99]'
             : 'border-rule hover:border-verdigris/60 hover:bg-paper/50'

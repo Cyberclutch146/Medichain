@@ -10,7 +10,7 @@ colors:
   verdigris: "#1F7A6D"
   verdigris-hover: "#186358"
   sage: "#DDE8E2"
-  amber: "#D97706"
+  amber: "#B45309"
   vermilion: "#DC2626"
 typography:
   display:

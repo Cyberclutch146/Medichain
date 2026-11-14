@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { DoctorAccess } from '../types';
-import { ShieldCheck, ShieldAlert, Clock, CheckCircle2, UserCheck, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Clock, CheckCircle2, UserCheck, Lock } from 'lucide-react';
 
 interface DoctorAccessCardProps {
   access: DoctorAccess;
@@ -32,13 +32,13 @@ export function DoctorAccessCard({
         <div>
           {access.active ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-sage/50 text-verdigris border border-verdigris/20">
-              <span className="w-2 h-2 rounded-full bg-verdigris animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-verdigris" />
               <span>Active Consent</span>
             </div>
           ) : (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-vermilion/10 text-vermilion border border-vermilion/20">
-              <span className="w-2 h-2 rounded-full bg-vermilion" />
-              <span>Access Revoked</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-paper text-muted border border-rule">
+              <span className="w-2 h-2 rounded-full bg-muted" />
+              <span>Sharing Paused</span>
             </div>
           )}
         </div>
@@ -70,13 +70,13 @@ export function DoctorAccessCard({
                       onRevokeAccess();
                       setShowConfirm(false);
                     }}
-                    className="px-3.5 py-1.5 bg-vermilion text-surface rounded-lg text-xs font-semibold hover:bg-vermilion/90 transition-colors shadow-xs"
+                    className="min-h-[44px] px-4 py-2 bg-vermilion text-surface rounded-lg text-xs font-semibold hover:bg-vermilion/90 transition-colors shadow-xs focus-visible:outline-2 focus-visible:outline-vermilion"
                   >
                     Confirm Revoke
                   </button>
                   <button
                     onClick={() => setShowConfirm(false)}
-                    className="px-3 py-1.5 border border-rule rounded-lg text-xs text-muted hover:text-ink transition-colors"
+                    className="min-h-[44px] px-4 py-2 border border-rule rounded-lg text-xs text-muted hover:text-ink transition-colors focus-visible:outline-2 focus-visible:outline-verdigris"
                   >
                     Cancel
                   </button>
@@ -84,7 +84,7 @@ export function DoctorAccessCard({
               ) : (
                 <button
                   onClick={() => setShowConfirm(true)}
-                  className="px-4 py-2 border border-vermilion/30 text-vermilion hover:bg-vermilion/10 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5"
+                  className="min-h-[44px] px-4 py-2 border border-vermilion/30 text-vermilion hover:bg-vermilion/10 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 focus-visible:outline-2 focus-visible:outline-vermilion"
                 >
                   <ShieldAlert className="w-4 h-4" />
                   <span>Revoke Access</span>
@@ -95,17 +95,17 @@ export function DoctorAccessCard({
         </div>
       ) : (
         <div className="py-6 border-b border-rule">
-          <div className="p-4 rounded-xl bg-vermilion/5 border border-vermilion/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="p-4 rounded-xl bg-paper border border-rule flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <AlertTriangle className="w-5 h-5 text-vermilion flex-shrink-0" />
+              <Lock className="w-5 h-5 text-muted flex-shrink-0" />
               <div className="text-xs">
-                <strong className="text-ink font-semibold block">Clinician access is currently revoked.</strong>
-                Dr. Arvind Rao cannot decrypt or view your medical panels until you re-grant permission.
+                <strong className="text-ink font-semibold block">Clinician sharing is currently paused.</strong>
+                Your diagnostic panels remain private in your vault until you choose to reconnect Dr. Rao.
               </div>
             </div>
             <button
               onClick={onGrantAccess}
-              className="px-3.5 py-1.5 bg-verdigris text-surface rounded-lg text-xs font-semibold hover:bg-verdigris-hover transition-colors whitespace-nowrap self-end sm:self-center"
+              className="min-h-[44px] px-4 py-2 bg-verdigris text-surface rounded-lg text-xs font-semibold hover:bg-verdigris-hover transition-colors whitespace-nowrap self-end sm:self-center shadow-xs focus-visible:outline-2 focus-visible:outline-verdigris"
             >
               Grant 7-Day Access
             </button>
@@ -115,7 +115,7 @@ export function DoctorAccessCard({
 
       {/* Human-Readable Access Timeline */}
       <div className="pt-6">
-        <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">
+        <h3 className="text-sm font-semibold text-ink mb-4">
           Decryption &amp; Audit Timeline
         </h3>
         <div className="space-y-4">
